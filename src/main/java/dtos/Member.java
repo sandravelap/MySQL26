@@ -7,7 +7,7 @@ import java.util.List;
 public class Member {
 
     @JsonProperty("member_id")
-    private Long memberId;
+    private Integer memberId;
 
     @JsonProperty("first_name")
     private String firstName;
@@ -35,8 +35,8 @@ public class Member {
 
     public Member() {}
 
-    public Long getMemberId() { return memberId; }
-    public void setMemberId(Long memberId) { this.memberId = memberId; }
+    public Integer getMemberId() { return memberId; }
+    public void setMemberId(Integer memberId) { this.memberId = memberId; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
