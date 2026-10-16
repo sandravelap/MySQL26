@@ -1,5 +1,6 @@
 package ui;
 
+import database.StructureDB;
 import dtos.HockeyClub;
 import myLib.UserMethods;
 import tools.jackson.databind.ObjectMapper;
@@ -39,7 +40,8 @@ public class MainMenu {
                 userMethods.myPrinter("Hockey club properly loaded.");
             }
             case "2" -> {
-
+                StructureDB structureDB = new StructureDB();
+                structureDB.createDB("CHRuben");
             }
 
             default -> userMethods.myPrinter("Wrong option.");
