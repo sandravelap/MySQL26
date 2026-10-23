@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS member_role;
+DROP TABLE IF EXISTS member;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS department;
+DROP TABLE IF EXISTS team_category;
+DROP TABLE IF EXISTS playing_position;
+
 CREATE TABLE playing_position (
                                   position_id   SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
                                   name          VARCHAR(50) NOT NULL,

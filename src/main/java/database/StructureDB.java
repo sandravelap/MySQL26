@@ -21,6 +21,82 @@ public class StructureDB {
         String message = "";
         DBConnection dbConnection = new DBConnection();
         try (Connection myCon = dbConnection.connect()) {
+            Statement stmtCreateTable = myCon.createStatement();
+            //sentencias de borrado si existen para poder hacer modificaciones
+            stmtCreateTable.executeUpdate("DROP TABLE IF EXISTS member_role");
+            stmtCreateTable.executeUpdate("DROP TABLE IF EXISTS member");
+            stmtCreateTable.executeUpdate("DROP TABLE IF EXISTS role");
+            stmtCreateTable.executeUpdate("DROP TABLE IF EXISTS department");
+            stmtCreateTable.executeUpdate("DROP TABLE IF EXISTS team_category");
+            stmtCreateTable.executeUpdate("DROP TABLE IF EXISTS playing_position");
+
+            //sentencias de creación de las tablas de mariadb
+            stmtCreateTable.executeUpdate("CREATE TABLE playing_position (\n" +
+                    "                                  position_id   SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                    "                                  name          VARCHAR(50) NOT NULL,\n" +
+                    "                                  CONSTRAINT pk_playing_position PRIMARY KEY (position_id),\n" +
+                    "                                  CONSTRAINT uq_playing_position_name UNIQUE (name)\n" +
+                    ")" );
+            stmtCreateTable.executeUpdate("CREATE TABLE team_category (\n" +
+                    "                               category_id   SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                    "                               name          VARCHAR(50) NOT NULL,\n" +
+                    "                               CONSTRAINT pk_team_category PRIMARY KEY (category_id),\n" +
+                    "                               CONSTRAINT uq_team_category_name UNIQUE (name)\n" +
+                    ")");
+            stmtCreateTable.executeUpdate("CREATE TABLE department (\n" +
+                    "                            department_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                    "                            name          VARCHAR(100) NOT NULL,\n" +
+                    "                            CONSTRAINT pk_department PRIMARY KEY (department_id),\n" +
+                    "                            CONSTRAINT uq_department_name UNIQUE (name)\n" +
+                    ")");
+            stmtCreateTable.executeUpdate("CREATE TABLE role (\n" +
+                    "                      role_id       INT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                    "                      role_name     VARCHAR(100) NOT NULL,\n" +
+                    "                      department_id SMALLINT UNSIGNED NOT NULL,\n" +
+                    "                      CONSTRAINT pk_role PRIMARY KEY (role_id),\n" +
+                    "                      CONSTRAINT uq_role_name_department UNIQUE (role_name, department_id),\n" +
+                    "                      CONSTRAINT fk_role_department FOREIGN KEY (department_id)\n" +
+                    "                          REFERENCES department (department_id)\n" +
+                    "                          ON UPDATE CASCADE ON DELETE RESTRICT\n" +
+                    ")");
+            stmtCreateTable.executeUpdate("CREATE TABLE member (\n" +
+                    "                        member_id    INT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                    "                        first_name   VARCHAR(100) NOT NULL,\n" +
+                    "                        last_name    VARCHAR(150) NOT NULL,\n" +
+                    "                        birth_year   SMALLINT UNSIGNED NOT NULL,\n" +
+                    "                        join_date    DATE NOT NULL,\n" +
+                    "                        leave_date   DATE NULL,\n" +
+                    "                        position_id  SMALLINT UNSIGNED NULL,\n" +
+                    "                        category_id  SMALLINT UNSIGNED NULL,\n" +
+                    "                        CONSTRAINT pk_member PRIMARY KEY (member_id),\n" +
+                    "                        CONSTRAINT fk_member_position FOREIGN KEY (position_id)\n" +
+                    "                            REFERENCES playing_position (position_id)\n" +
+                    "                            ON UPDATE CASCADE ON DELETE SET NULL,\n" +
+                    "                        CONSTRAINT fk_member_category FOREIGN KEY (category_id)\n" +
+                    "                            REFERENCES team_category (category_id)\n" +
+                    "                            ON UPDATE CASCADE ON DELETE SET NULL,\n" +
+                    "                        CONSTRAINT ck_member_dates CHECK (leave_date IS NULL OR leave_date >= join_date),\n" +
+                    "                        CONSTRAINT ck_member_birth_year CHECK (birth_year BETWEEN 1900 AND 2100),\n" +
+                    "                        INDEX idx_member_name (last_name, first_name),\n" +
+                    "                        INDEX idx_member_category (category_id)\n" +
+                    ")");
+            stmtCreateTable.executeUpdate("CREATE TABLE member_role (\n" +
+                    "                             member_role_id INT UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                    "                             member_id      INT UNSIGNED NOT NULL,\n" +
+                    "                             role_id        INT UNSIGNED NOT NULL,\n" +
+                    "                             start_date     DATE NOT NULL,\n" +
+                    "                             end_date       DATE NULL,\n" +
+                    "                             CONSTRAINT pk_member_role PRIMARY KEY (member_role_id),\n" +
+                    "                             CONSTRAINT uq_member_role_start UNIQUE (member_id, role_id, start_date),\n" +
+                    "                             CONSTRAINT fk_member_role_member FOREIGN KEY (member_id)\n" +
+                    "                                 REFERENCES member (member_id)\n" +
+                    "                                 ON UPDATE CASCADE ON DELETE CASCADE,\n" +
+                    "                             CONSTRAINT fk_member_role_role FOREIGN KEY (role_id)\n" +
+                    "                                 REFERENCES role (role_id)\n" +
+                    "                                 ON UPDATE CASCADE ON DELETE RESTRICT,\n" +
+                    "                             CONSTRAINT ck_member_role_dates CHECK (end_date IS NULL OR end_date >= start_date),\n" +
+                    "                             INDEX idx_member_role_role (role_id)\n" +
+                    ")");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

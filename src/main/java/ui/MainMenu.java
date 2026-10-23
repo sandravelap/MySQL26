@@ -41,7 +41,8 @@ public class MainMenu {
             }
             case "2" -> {
                 StructureDB structureDB = new StructureDB();
-                structureDB.createDB("CHRuben");
+                //userMethods.myPrinter(structureDB.createDB("CHRuben"));
+                userMethods.myPrinter(structureDB.createTables());
             }
 
             default -> userMethods.myPrinter("Wrong option.");
