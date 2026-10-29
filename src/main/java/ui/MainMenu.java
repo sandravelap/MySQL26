@@ -3,6 +3,7 @@ package ui;
 import database.StructureDB;
 import dtos.HockeyClub;
 import myLib.UserMethods;
+import repositories.PlayingPositionRepository;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.file.Path;
@@ -45,7 +46,10 @@ public class MainMenu {
                 //userMethods.myPrinter(structureDB.createDB("CHRuben"));
                 userMethods.myPrinter(structureDB.createTables());
             }
-
+            case "3" -> {
+                PlayingPositionRepository pprepo = new PlayingPositionRepository();
+                userMethods.myPrinter(String.valueOf(pprepo.idPositionByName("Defenseman")));
+            }
             default -> userMethods.myPrinter("Wrong option.");
         }
     }
