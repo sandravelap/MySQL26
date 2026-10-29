@@ -1,4 +1,4 @@
-package dtos;
+package dtosJSON;
 
 import java.util.ArrayList;
 

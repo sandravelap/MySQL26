@@ -1,4 +1,4 @@
-package dtos;
+package dtosJSON;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
