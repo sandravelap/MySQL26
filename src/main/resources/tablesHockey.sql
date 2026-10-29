@@ -85,3 +85,28 @@ CREATE TABLE member_role (
                              CONSTRAINT ck_member_role_dates CHECK (end_date IS NULL OR end_date >= start_date),
                              INDEX idx_member_role_role (role_id)
 ) ENGINE=InnoDB;
+
+INSERT INTO playing_position (position_id, name) VALUES
+                                                     (1, 'Center Forward'),
+                                                     (2, 'Goaltender'),
+                                                     (3, 'Defenseman');
+
+-- 2. Categorías de equipo (team_category)
+INSERT INTO team_category (category_id, name) VALUES
+                                                  (1, 'Senior A'),
+                                                  (2, 'Women''s A'),
+                                                  (3, 'Veterans');
+
+-- 3. Departamentos (department)
+INSERT INTO department (department_id, name) VALUES
+                                                 (1, 'Sports'),
+                                                 (2, 'Board of Directors'),
+                                                 (3, 'U-12 Academy');
+
+-- 4. Roles por departamento (role)
+-- Se mantienen las IDs de rol (101-104) especificadas en el JSON
+INSERT INTO role (role_id, role_name, department_id) VALUES
+                                                         (101, 'Team Captain', (SELECT department_id FROM department WHERE name = 'Sports')),
+                                                         (102, 'Board Member', (SELECT department_id FROM department WHERE name = 'Board of Directors')),
+                                                         (103, 'Assistant Coach', (SELECT department_id FROM department WHERE name = 'U-12 Academy')),
+                                                         (104, 'Treasurer', (SELECT department_id FROM department WHERE name = 'Board of Directors'));

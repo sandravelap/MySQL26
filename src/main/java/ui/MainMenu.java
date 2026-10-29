@@ -21,6 +21,7 @@ public class MainMenu {
             userMethods.myPrinter("Choose an option: ");
             userMethods.myPrinter("1. Read JSON file using Jackson");
             userMethods.myPrinter("2. Create data base");
+            userMethods.myPrinter("3. Id from playing position");
             userMethods.myPrinter("0. Exit.");
             processOption(requestOption());
         }while(!exitMenu);
