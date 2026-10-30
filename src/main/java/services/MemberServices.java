@@ -1,22 +1,71 @@
 package services;
 
+import daos.MemberDAO;
 import dtosUI.MemberUI;
+import repositories.CategoryRepository;
+import repositories.MemberRepository;
+import repositories.PlayingPositionRepository;
 
 import java.time.LocalDate;
 import java.util.Date;
 
 public class MemberServices {
     public String insertNewMember(MemberUI newMember) {
-        String message ="";
+        String message ="Feedback: \n";
+        boolean redFlag = false;
+        PlayingPositionRepository pprepo = new PlayingPositionRepository();
+        CategoryRepository categoryRepository = new CategoryRepository();
+        MemberRepository memberRepository = new MemberRepository();
         //comprobaciones antes de llamar al MemberRepository
         //join date tiene que ser fecha anterior a hoy
-        Date ahora = new Date(); // Crea una fecha con el instante actual del sistema
-        if (newMember.getJoinDate().after(ahora)){
-
+        Date now = new Date(); // Crea una fecha con el instante actual del sistema
+        Integer categoryId = categoryRepository.idCategoryByName(newMember.getCategory());
+        Integer positionId =pprepo.idPositionByName(newMember.getPosition());
+        if (newMember.getJoinDate().after(now)){
+            message += "Wrong date. \n";
+            redFlag = true;
         }
-        //position name tiene que existir y tener un id recuperable
+        //position name tiene que existir y tener un id recuperable o ser null
+        if (newMember.getPosition().isBlank()){
+            newMember.setPosition(null);
+        }else{
+            //si la función devuelve 0 es que no existe esa posición en la BD
+            if (positionId ==0){
+                message += "Wrong position. \n";
+                redFlag = true;
+            } else if (positionId==null) {
+                message += "DB error";
+                redFlag = true;
+            }
+        }
+        //cateory puede existir y ser recuperable o ser null
+        if (newMember.getCategory().isBlank()){
+            newMember.setCategory(null);
+        }else{
+            if (categoryId==0){
+                message += "Wrong category. \n";
+                redFlag = true;
+            } else if (categoryId==null) {
+                message += "DB error";
+                redFlag = true;
+            }
+        }
 
-        //cateory tiene que existir y ser recuperable
+        //si no hay ninguna redFlag es que puedo hacer el insert
+        if (!redFlag){
+            MemberDAO newMemberDAO = new MemberDAO();
+            newMemberDAO.setFirstName(newMember.getFirstName());
+            newMemberDAO.setLastName(newMember.getLastName());
+            newMemberDAO.setBirthYear(Short.parseShort(String.valueOf(newMember.getBirthYear())));
+            newMemberDAO.setJoinDate((java.sql.Date) newMember.getJoinDate());
+            //lo ponemos para que este código sea más reutilizable
+            newMemberDAO.setLeaveDate((java.sql.Date) newMember.getLeaveDate());
+            newMemberDAO.setPositionId(positionId);
+            newMemberDAO.setCategoryId(categoryId);
+            if(memberRepository.createMember(newMemberDAO)){
+                message = "Congratulations. Member inserted.";
+            }
+        }
         return message;
     }
 }
