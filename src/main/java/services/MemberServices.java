@@ -57,9 +57,20 @@ public class MemberServices {
             newMemberDAO.setFirstName(newMember.getFirstName());
             newMemberDAO.setLastName(newMember.getLastName());
             newMemberDAO.setBirthYear(Short.parseShort(String.valueOf(newMember.getBirthYear())));
-            newMemberDAO.setJoinDate((java.sql.Date) newMember.getJoinDate());
+            //para pasar de util.date a ms, y usar el constructor de sql.date con parámetro ms
+            if (newMember.getJoinDate()==null){
+                newMemberDAO.setJoinDate(null);
+            }else {
+                java.sql.Date joinDateSql = new java.sql.Date(newMember.getJoinDate().getTime());
+                newMemberDAO.setJoinDate(joinDateSql);
+            }
             //lo ponemos para que este código sea más reutilizable
-            newMemberDAO.setLeaveDate((java.sql.Date) newMember.getLeaveDate());
+            if (newMember.getLeaveDate()==null){
+                newMemberDAO.setLeaveDate(null);
+            }else {
+                java.sql.Date leaveDateSql = new java.sql.Date(newMember.getLeaveDate().getTime());
+                newMemberDAO.setLeaveDate(leaveDateSql);
+            }
             newMemberDAO.setPositionId(positionId);
             newMemberDAO.setCategoryId(categoryId);
             if(memberRepository.createMember(newMemberDAO)){

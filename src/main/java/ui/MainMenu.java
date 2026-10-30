@@ -56,7 +56,7 @@ public class MainMenu {
                 newMember.setJoinDate(userMethods.requestDate("Join date: \n"));
                 newMember.setPosition(userMethods.requestString("Playing position: \n"));
                 newMember.setCategory(userMethods.requestString("Category: "));
-                String feedback = memberServices.insertNewMember(newMember);
+                userMethods.myPrinter(memberServices.insertNewMember(newMember));
             }
             default -> userMethods.myPrinter("Wrong option.");
         }

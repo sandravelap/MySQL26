@@ -24,7 +24,7 @@ public class MemberRepository {
             stmt.setDate(5, newMember.getLeaveDate());
             stmt.setInt(6,newMember.getPositionId());
             stmt.setInt(7, newMember.getCategoryId());
-            stmt.executeUpdate("");
+            stmt.executeUpdate();
             insertOk = true;
         } catch (SQLException e) {
             insertOk = false;
